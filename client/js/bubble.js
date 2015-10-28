@@ -1,4 +1,8 @@
 $(function() {
+	if (detect_mobile()) {
+		var warning_url = location.href + 'warning.html';
+		window.location.replace(warning_url);
+	}
     var ws = '';
     var init = false;
     var ip = '';
@@ -521,6 +525,16 @@ $(function() {
             count = count < 100 ? count : '99+';
             $('a[href="#tab_' + roomname + '"] .badge').text(count);
             $('a[href="#tab_' + roomname + '"] .badge').show();
+        }
+    }
+    /**
+     * 检测mobile终端 
+     */
+    function detect_mobile() {
+        if (navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)) {
+            return true;
+        } else {
+            return false;
         }
     }
 });

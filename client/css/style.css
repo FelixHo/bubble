@@ -367,9 +367,9 @@ textarea:focus {
 	margin: 0px;
 }
 .event-list > li > .info > .desc {
-	font-size: 13pt;
-	font-weight: 300;
-	margin: 0px;
+	font-size: small;
+    font-weight: 300;
+    margin: 5px 0 0 0;
 }
 
 /**emoticon**/
