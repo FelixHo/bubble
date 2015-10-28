@@ -1,9 +1,13 @@
 $(function() {
     var ws = '';
     var init = false;
+    var ip = '';
     checkws();
-    start('正在建立连接...');
-
+    $.getJSON("http://jsonip.com/?callback=?", function (data) {
+        console.log(data);
+        ip = data.ip;
+        start('正在建立连接...');
+    });
     function start(msg) {
         waitingDialog.show(msg, {
             dialogSize: 'sm',
@@ -71,6 +75,13 @@ $(function() {
                                 Cookies.remove('bubble_username');
                                 check_login();
                             }
+                        });
+                    } else if (code == 403) {
+                    		swal({
+                            title: 'Opps!',
+                            text: msg.info,
+                            showConfirmButton: false,
+                            type: "warning"
                         });
                     } else if (code == 200) {
                         //Cookie 保留一天
@@ -280,7 +291,8 @@ $(function() {
         if (username) {
             ws.send($.toJSON({
                 'action': 'login',
-                'username': username
+                'username': username,
+                'ip':ip
             }));
         } else {
             $("#login").modal('show');

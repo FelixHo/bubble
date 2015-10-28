@@ -26,6 +26,7 @@ $table->column('name', swoole_table::TYPE_STRING, 16);
 $table->column('fd', swoole_table::TYPE_INT);
 $table->column('dateline', swoole_table::TYPE_INT);
 $table->column('avatar', swoole_table::TYPE_INT);
+$table->column('ip', swoole_table::TYPE_STRING, 16);
 $table->create();
 $ws->table_user = $table;
 
@@ -45,17 +46,22 @@ $ws->on('message', function($ws, $frame)
                 $username = $msg['username'];
                 
                 if ($ws->table_user->exist($username)) {
-                    $ws->push($frame->fd, jsonResult($act, INVALID_CODE, "用户名 “{$username}” 已存在")); // 已存在
-                }
-                if (mb_strlen($username, 'utf8') > USERNAME_MAXLEN) {
-                    $ws->push($frame->fd, jsonResult($act, INVALID_CODE, "非法用户名")); // 已存在
+                    $usr = $ws->table_user->get($username);
+                    if ($usr['ip'] == $msg['ip']) {
+                        $ws->push($frame->fd, jsonResult($act, FORBID_CODE, "你已经以用户名 “{$username}” 在其他窗口登录, 请关闭本窗口")); // 相同浏览器不允许重复登录相同用户
+                    } else {
+                        $ws->push($frame->fd, jsonResult($act, INVALID_CODE, "用户名 “{$username}” 已存在")); // 已存在	
+                    }
+                } elseif (mb_strlen($username, 'utf8') > USERNAME_MAXLEN) {
+                    $ws->push($frame->fd, jsonResult($act, INVALID_CODE, "非法用户名")); // 用户名过长
                 } else {
                     $avatar = get_avatar_number($username);
                     $ws->table_user->set($username, array(
                         'name' => $username,
                         'fd' => $frame->fd,
                         'dateline' => time(),
-                        'avatar' => $avatar
+                        'avatar' => $avatar,
+                        'ip' => $msg['ip']
                     ));
                     $ol   = get_online_lsit($ws, $frame->fd);
                     //登录成功
