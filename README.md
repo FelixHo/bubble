@@ -32,7 +32,7 @@
 ![截图3](https://github.com/FelixHo/bubble/blob/master/raw/3.png "截图")
 
 # [Have Fun !](http://bubble.hejunhao.me) 
-*** 
+
 
 Licence
 --
