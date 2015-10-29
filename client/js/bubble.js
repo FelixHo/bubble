@@ -443,7 +443,7 @@ $(function() {
         if (!window.WebSocket) {
             swal({
                 title: "错误",
-                text: "您当前的浏览器不支持Websocket API , 不支持聊天功能!",
+                text: "您当前的浏览器不支持Websocket API , 不支持聊天功能!（双核浏览器请切换至极速模式）",
                 type: "error",
                 confirmButtonText: "请更换浏览器重试"
             }, function(isConfirm) {
