@@ -1,11 +1,8 @@
 $(function() {
-	if (detect_mobile()) {
-		var warning_url = location.href + 'warning.html';
-		window.location.replace(warning_url);
-	}
     var ws = '';
     var init = false;
     var ip = '';
+    detectIE();
     checkws();
     $.getJSON("http://jsonip.com/?callback=?", function (data) {
         console.log(data);
@@ -527,14 +524,36 @@ $(function() {
             $('a[href="#tab_' + roomname + '"] .badge').show();
         }
     }
+    
     /**
-     * 检测mobile终端 
+     * 检测IE版本 
      */
-    function detect_mobile() {
-        if (navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)) {
-            return true;
-        } else {
-            return false;
+    function detectIE() {
+    	    var version = false;
+        var ua = window.navigator.userAgent;
+
+        var msie = ua.indexOf('MSIE ');
+       if (msie > 0) {
+            // IE 10 or older
+            version = parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
+        }
+
+        var trident = ua.indexOf('Trident/');
+       if (trident > 0) {
+            // IE 11 
+            var rv = ua.indexOf('rv:');
+            version = parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
+        }
+
+        var edge = ua.indexOf('Edge/');
+        if (edge > 0) {
+           // IE 12 
+           version = parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
+        }
+ 
+        if (version !== false && version < 11) {
+        	    var warning_url = location.href + 'IE.html';
+	        window.location.replace(warning_url);
         }
     }
 });
