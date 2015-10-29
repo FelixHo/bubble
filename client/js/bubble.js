@@ -53,6 +53,7 @@ $(function() {
                 case 'init':
                     if (!init) {
                         init = true;
+                        console.debug(data);
                         $.each(data, function() {
                             insert_comment_item('grouproom', this.username, this.avatar, this.time, this.content, 0.1);
                         });

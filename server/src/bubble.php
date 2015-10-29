@@ -16,8 +16,7 @@ define('CONTENT_MAXLEN', 500);
 
 //创建websocket服务器对象，监听127.0.0.1:9009端口
 $ws    = new swoole_websocket_server("127.0.0.1", 9009);
-//数据操作类
-$db    = new db();
+
 //机器人类
 $robot = new Robot();
 //在线用户详情记录
@@ -37,7 +36,7 @@ $ws->on('open', function($ws, $request)
 
 $ws->on('message', function($ws, $frame)
 {
-    global $db, $robot;
+    global $robot;
     $msg = json_decode($frame->data, true);
     if (JSON_ERROR_NONE == json_last_error()) {
         $act = $msg['action'];
@@ -79,6 +78,7 @@ $ws->on('message', function($ws, $frame)
                     broadcast($ws, $frame->fd, 'online', SUCCESS_CODE, "{$username} 已经上线", $data);
                     logger("{$username} 已经上线");
                     //初始化群聊记录
+                    $db  = new db();
                     $log = $db->select_latest_group_chat_log(30);
                     $ws->push($frame->fd, jsonResult('init', SUCCESS_CODE, 'success', $log));
                 }
@@ -126,6 +126,7 @@ $ws->on('message', function($ws, $frame)
                     $ws->push($frame->fd, jsonResult($act, SUCCESS_CODE, 'success', $data));
                     
                 } elseif ($category == 'public') {
+                    $db = new db();
                     $db->insert_group_chat_log(array(
                         'username' => $from,
                         'avatar' => $avatar,
