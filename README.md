@@ -3,36 +3,33 @@
 
 --- 
 ### 兼容 
-* ###### 所有主流浏览器 
-* ##### IE 10、11、Edge 
-* ~~移动设备~~ 
+* **所有主流浏览器**
+* **IE 10、11、Edge**
+* ~~移动设备~~
 
 ### 技术支持 
-* ###### [Swoole](http://www.swoole.com/) - Websocket（一个纯C编写的高性能网络通信PHP扩展）
-* ###### [Medoo](http://medoo.in)（轻量级PHP MySql封装库）
-* ###### jQuery-Sina-Emotion（新浪微博表情jQuery插件，美化版）
-* ###### Html5 Websocket 
-* ###### Bootstrap 3.3.5 
-* ###### [图灵机器人API](http://www.tuling123.com) 
+* **[Swoole](http://www.swoole.com/) - Websocket（一个纯C编写的高性能网络通信PHP扩展）**
+* **[Medoo](http://medoo.in)（轻量级PHP MySql封装库）**
+* **jQuery-Sina-Emotion（新浪微博表情jQuery插件，美化版**
+* **Html5 Websocket**
+* **Bootstrap 3.3.5**
+* **[图灵机器人API](http://www.tuling123.com)**
 
 ### 功能&&实现 
-* ###### 群聊 
-* ###### 私聊 
-* ###### 机器人交互 
-* ###### 异常重连 
-* ###### 实时用户状态提醒 
-* ###### 实时消息红点提示 
-* ###### 微博最新GIF表情支持 
+* **群聊**
+* **私聊**
+* **机器人交互**
+* **异常重连**
+* **实时用户状态提醒**
+* **实时消息红点提示**
+* **微博最新GIF表情支持** 
 
 ### 截图 
-![截图1][1] 
+![截图1](https://github.com/FelixHo/bubble/blob/master/raw/1.png "截图") 
 
-![截图2][2] 
+![截图2](https://github.com/FelixHo/bubble/blob/master/raw/2.png "截图")
 
-![截图3][3] 
-[1]: https://github.com/FelixHo/bubble/tree/master/bubble/raw/1.png "截图" 
-[2]: https://github.com/FelixHo/bubble/tree/master/bubble/raw/2.png "截图" 
-[3]: https://github.com/FelixHo/bubble/tree/master/bubble/raw/3.png "截图" 
+![截图3](https://github.com/FelixHo/bubble/blob/master/raw/3.png "截图")
 
 # [Have Fun !](http://bubble.hejunhao.me) 
 *** 
