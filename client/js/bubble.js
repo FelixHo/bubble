@@ -133,7 +133,7 @@ $(function() {
      * 快捷回复
      */
     $('body').on('keypress', 'textarea', function(e) {
-        if ((e.ctrlKey || e.shiftKey) && e.keyCode == 13) {
+        if ((e.ctrlKey || e.shiftKey) && (e.keyCode == 10 || e.keyCode == 13)) {
             $(this).parent().children('.chat-submit').trigger('click');
             e.preventDefault();
         }
