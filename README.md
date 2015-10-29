@@ -1,7 +1,7 @@
-# [Bubble](http://bubble.hejunhao.me)  
+# [Bubble](http://bubble.hejunhao.me)
 > 基于 PHP-Swoole 的在线聊天WEB应用 
 
---
+
 ### 兼容 
 * **所有主流浏览器**
 * **IE 10、11、Edge**
