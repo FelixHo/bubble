@@ -4,7 +4,7 @@ $(function() {
     var ip = '';
     detectIE();
     checkws();
-    
+	
     $.getJSON("http://jsonip.com/?callback=?", function (data) {
         console.log(data);
         ip = data.ip;
@@ -106,6 +106,9 @@ $(function() {
                     if (msg.code == 200) {
                         add_tab(data.room, data.room_icon)
                         insert_comment_item(data.room, data.username, data.avatar, data.time, data.content, 1000);
+                        if (!document.hasFocus()) {
+                            document.title = "【有新的消息】";
+                        }
                     
                     } else if (msg.code == -101) {
                         swal({
@@ -560,4 +563,11 @@ $(function() {
 	        window.location.replace(warning_url);
         }
     }
+    
+    /**
+     * 恢复标题
+     */
+    $(window).focus(function () {
+	    	$("title").text("Welcome To Bubble Chat Room !");
+	});
 });
