@@ -4,11 +4,13 @@ $(function() {
     var ip = '';
     detectIE();
     checkws();
+    
     $.getJSON("http://jsonip.com/?callback=?", function (data) {
         console.log(data);
         ip = data.ip;
         start('正在建立连接...');
     });
+
     function start(msg) {
         waitingDialog.show(msg, {
             dialogSize: 'sm',
@@ -102,9 +104,9 @@ $(function() {
 
                 case 'chat':
                     if (msg.code == 200) {
-                        $('#reply_' + data.room).val('');
                         add_tab(data.room, data.room_icon)
                         insert_comment_item(data.room, data.username, data.avatar, data.time, data.content, 1000);
+                    
                     } else if (msg.code == -101) {
                         swal({
                             title: '发送失败!',
@@ -194,6 +196,7 @@ $(function() {
                 'from': from,
                 'to': to
             }));
+            $('#reply_' + to).val('');
         }
     });
 
