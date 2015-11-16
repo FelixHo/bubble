@@ -125,6 +125,7 @@ $(function() {
                             text: msg.info,
                             type: 'warning'
                         });
+                        waitingDialog.hide();
                     }
                     break;
                     
