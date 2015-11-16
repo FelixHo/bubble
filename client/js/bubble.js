@@ -338,9 +338,9 @@ $(function() {
 	        			swal('非法文件', '只支持发送png、jpg、bmp和gif类型的图片', 'warning');
 	        			console.debug(currfile.type);
 	        		} else if (currfile.size > IMAGE_LIMIT_SIZE) { //大于1.5MB需要压缩
-	        			waitingDialog.show('正在发送图片...', {
+	        			waitingDialog.show('正在发送...', {
             				dialogSize: 'sm',
-            				progressType: 'warning',
+            				progressType: 'success',
             				onHide:function(){}
 					});
 	        			lrz(currfile, {quality:0.6})
@@ -378,9 +378,9 @@ $(function() {
 		                'to': to,
 		                'media':1
             			}));
-            			waitingDialog.show('正在发送图片...', {
+            			waitingDialog.show('正在发送...', {
             				dialogSize: 'sm',
-            				progressType: 'warning',
+            				progressType: 'success',
             				onHide:function(){}
 					});
             			currform[0].reset();
