@@ -57,6 +57,9 @@ $(function() {
                         init = true;
                         console.debug(data);
                         $.each(data, function() {
+                        		if (this.media == 1) {
+                        			this.content = '<a class="fancybox" href="'+ this.content+'"><img src="'+ this.content+'" class="imgcomment"></a>';
+                        		}
                             insert_comment_item('grouproom', this.username, this.avatar, this.time, this.content, 0.1);
                         });
                     }
@@ -105,6 +108,12 @@ $(function() {
                 case 'chat':
                     if (msg.code == 200) {
                         add_tab(data.room, data.room_icon)
+                        if (data.media == 1) {
+                        		data.content = '<a class="fancybox" href="'+ data.content+'"><img src="'+ data.content+'" class="imgcomment"></a>';
+                        		if( data.username == $('#bubble_username').val() ){
+                        			waitingDialog.hide();
+                        		}
+                        }
                         insert_comment_item(data.room, data.username, data.avatar, data.time, data.content, 1000);
                         if (!document.hasFocus()) {
                             document.title = "【有新的消息】";
@@ -118,7 +127,7 @@ $(function() {
                         });
                     }
                     break;
-
+                    
                 case 'online':
                     insert_contract_list_item(data.username, data.avatar, false);
                     message_alert(data.username + " 上线了!", data.avatar, 'success', 'online_' + data.username);
@@ -197,7 +206,8 @@ $(function() {
                 'content': content,
                 'category': category,
                 'from': from,
-                'to': to
+                'to': to,
+                'media':0
             }));
             $('#reply_' + to).val('');
         }
@@ -291,6 +301,95 @@ $(function() {
         $(this).sinaEmotion(target);
         e.stopPropagation();
     });
+    
+    /**
+     * 发送图片
+     */
+    $('body').on('click', '.fa-file-image-o', function(e) {
+   		$(this).parent().children('input').trigger('click');
+   	});
+
+	$('body').on('change', '.sendpic', readImage);
+	
+	/**
+	 * 大图预览 
+	 */
+	$(".fancybox").fancybox({
+		openEffect	: 'elastic',
+		closeEffect	: 'elastic'
+	});
+	
+	/**
+	 * 获取图片base64
+	 */
+	function readImage() {//大图预览;进度条;
+	    if ( this.files && this.files[0] ) {
+	    		var currform = $(this).parents('form');
+	    		var currfile = this.files[0];
+	    		var mime = ['image/png', 'image/jpeg', 'image/bmp', 'image/gif']
+	        var FR = new FileReader();
+	        var category = $(this).data('category');
+	        var to = $(this).data('room');
+	        var from = $("#bubble_username").val();
+	        var IMAGE_LIMIT_SIZE = 1.9*1024*1024;
+	        var imgData = '';
+	        FR.onload = function(e) {
+	        		if ($.inArray( currfile.type, mime )==-1){
+	        			swal('非法文件', '只支持发送png、jpg、bmp和gif类型的图片', 'warning');
+	        			console.debug(currfile.type);
+	        		} else if (currfile.size > IMAGE_LIMIT_SIZE) { //大于1.9MB需要压缩
+	        			waitingDialog.show('正在发送图片...', {
+            				dialogSize: 'sm',
+            				progressType: 'warning',
+            				onHide:function(){}
+					});
+	        			lrz(currfile, {quality:0.8})
+				    .then(function (rst) {
+				    		console.debug('压缩前大小：'+currfile.size/1024+'KB');
+				    		console.debug('压缩后大小：'+rst.fileLen/1024+'KB'+'   Base64Len：'+rst.base64Len/1024+'KB');
+				        if (rst.base64Len > IMAGE_LIMIT_SIZE) {
+				        		swal('警告!', '您的图片太大啦!', 'warning');
+				        		waitingDialog.hide();
+				        } else {
+				        		imgData = rst.base64;
+				        		ws.send($.toJSON({
+				                'action': 'chat',
+				                'content': imgData,
+				                'category': category,
+				                'from': from,
+				                'to': to,
+				                'media':1
+		            			}));
+				        }
+				    }).catch(function (err) {
+				        swal('出错啦!', '压缩图片过程中出错，建议换一张重试.', 'error');
+				        waitingDialog.hide();
+				    }).always(function(){
+				    		currform[0].reset();
+				    });
+	        			
+	        		} else {
+	        			imgData = e.target.result;
+	        			ws.send($.toJSON({
+		                'action': 'chat',
+		                'content': imgData,
+		                'category': category,
+		                'from': from,
+		                'to': to,
+		                'media':1
+            			}));
+            			waitingDialog.show('正在发送图片...', {
+            				dialogSize: 'sm',
+            				progressType: 'warning',
+            				onHide:function(){}
+					});
+            			currform[0].reset();
+	        		}
+	        };       
+	        FR.readAsDataURL( this.files[0] );
+	    }
+	}
+   		
     /**
      * 检测登录状态
      */
@@ -344,6 +443,7 @@ $(function() {
             '<textarea placeholder="请输入点什么..." id="reply_' + username + '"></textarea>' +
             '<ul>' +
             '<li><i class="fa fa-smile-o"></i></li>' +
+            '<li><i class="fa fa-file-image-o"></i><input type="file" class="sendpic hidden" data-room="' + username + '" data-category="' + category + '" /></li>' +
             '</ul>' +
             '<button class="btn btn-success green chat-submit" data-room="' + username + '" data-category="' + category + '"><i class="fa fa-reply"></i>Send</button>' +
             '<text>(Ctrl + Enter)</text>' +

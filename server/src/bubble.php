@@ -34,10 +34,19 @@ $ws->on('open', function($ws, $request)
     $ws->push($request->fd, jsonResult('open', SUCCESS_CODE, "连接成功!\n"));
 });
 
+$frames_data = array();
 $ws->on('message', function($ws, $frame)
 {
-    global $robot;
-    $msg = json_decode($frame->data, true);
+    global $robot, $frames_data;
+	$frames_data[$frame->fd] = isset($frames_data[$frame->fd]) ? $frames_data[$frame->fd] : '';
+	$frames_data[$frame->fd] .= $frame->data;
+
+	if ($frame->finish){
+		$json = $frames_data[$frame->fd];
+		$msg = json_decode($json, true);	
+		unset($frames_data[$frame->fd]);
+	}
+	
     if (JSON_ERROR_NONE == json_last_error()) {
         $act = $msg['action'];
         switch ($act) {
@@ -90,13 +99,17 @@ $ws->on('message', function($ws, $frame)
                 $date     = date('Y年m月d日 H:i:s');
                 $from     = $msg['from'];
                 $usr      = get_valid_usr($ws, $from, $frame->fd);
+				$media    = $msg['media'];
                 
                 if (empty($from) || empty($usr)) {
                     $ws->push($frame->fd, jsonResult('error', ERROR_CODE, '用户名信息异常，请刷新页面!'));
                     break;
+                } elseif (strlen($msg['content'])>=2*1024*1024) {
+                		$ws->push($frame->fd, jsonResult('error', ERROR_CODE, '内容大小超出最大限制(2MB)'));
+					break;
                 }
                 
-                $content = content_filter($msg['content']);
+                $content = $media ? $msg['content'] : content_filter($msg['content']);
                 $avatar  = get_avatar_number($from);
                 $to      = $msg['to'];
                 
@@ -108,10 +121,14 @@ $ws->on('message', function($ws, $frame)
                         'time' => $date,
                         'content' => $content,
                         'room' => $to,
-                        'room_icon' => get_avatar_number($to)
+                        'room_icon' => get_avatar_number($to),
+                        'media' => $media
                     );
                     $ws->push($frame->fd, jsonResult($act, SUCCESS_CODE, 'success', $data));
                     //访问机器人
+                    if ($media) {
+                    		$content = '好看吗';
+                    }
                     $result = $robot->chat($content);
                     $date   = date('Y年m月d日 H:i:s');
                     $data   = array(
@@ -120,26 +137,36 @@ $ws->on('message', function($ws, $frame)
                         'time' => $date,
                         'content' => $result,
                         'room' => $to,
-                        'room_icon' => get_avatar_number($to)
+                        'room_icon' => get_avatar_number($to),
+                        'media' => 0
                     );
                     //机器人应答
                     $ws->push($frame->fd, jsonResult($act, SUCCESS_CODE, 'success', $data));
                     
                 } elseif ($category == 'public') {
                     $db = new db();
-                    $db->insert_group_chat_log(array(
-                        'username' => $from,
-                        'avatar' => $avatar,
-                        'time' => $date,
-                        'content' => $content
-                    ));
+					
+					if($media==1){//出于对服务器安全考虑，不存储图片数据
+						$save_content = '[图片] (出于安全原因，群聊图片不作永久保存)';
+					} else {
+						$save_content = $content;
+					}
+					$db->insert_group_chat_log(array(
+                        	'username' => $from,
+                        	'avatar' => $avatar,
+                     	'time' => $date,
+                        	'content' => $save_content,
+                        	'media' => 0
+                    	));
+                    
                     $data = array(
                         'username' => $from,
                         'avatar' => $avatar,
                         'time' => $date,
                         'content' => $content,
                         'room' => $to,
-                        'room_icon' => get_avatar_number($to)
+                        'room_icon' => get_avatar_number($to),
+                        'media' => $media
                     );
                     //广播群聊消息
                     broadcast($ws, $frame->fd, $act, SUCCESS_CODE, 'success', $data, true);
@@ -155,7 +182,8 @@ $ws->on('message', function($ws, $frame)
                             'time' => $date,
                             'content' => $content,
                             'room' => $to,
-                            'room_icon' => get_avatar_number($to)
+                            'room_icon' => get_avatar_number($to),
+                            'media' => $media
                         );
                         $ws->push($frame->fd, jsonResult($act, SUCCESS_CODE, 'success', $data));
                         //发送到私聊用户
@@ -165,7 +193,8 @@ $ws->on('message', function($ws, $frame)
                             'time' => $date,
                             'content' => $content,
                             'room' => $from,
-                            'room_icon' => get_avatar_number($from)
+                            'room_icon' => get_avatar_number($from),
+                            'media' => $media
                         );
                         $ws->push($to_fd, jsonResult($act, SUCCESS_CODE, 'success', $data));
                     }
@@ -179,6 +208,7 @@ $ws->on('message', function($ws, $frame)
         }
         
     } else {
+    		var_export($frame->data);
         $ws->push($frame->fd, jsonResult('error', FORBID_CODE, '非法参数请求!'));
     }
 });

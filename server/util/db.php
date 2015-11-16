@@ -51,7 +51,8 @@ class db
             'username',
             'avatar',
             'content',
-            'time'
+            'time',
+            'media'
         ), array(
             'ORDER' => 'id DESC',
             'LIMIT' => $limit

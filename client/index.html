@@ -12,6 +12,7 @@
       <link rel="stylesheet" href="css/font-awesome-4.4.0/css/font-awesome.min.css">
       <link rel="stylesheet" type="text/css" href="css/sweetalert.css"/>
       <link rel="stylesheet" type="text/css" href="css/jquery-sinaEmotion-2.1.0.css"/>
+      <link rel="stylesheet" type="text/css" href="css/fancybox/jquery.fancybox.css"/>     
       <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
       <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
       <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
@@ -21,6 +22,8 @@
       <script src="js/waitingdialog.js" type="text/javascript" charset="utf-8"></script>
       <script src="js/jquery.json.min.js" type="text/javascript" charset="utf-8"></script>
       <script src="js/jquery-sinaEmotion-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+      <script src="js/lrz.all.bundle.js" type="text/javascript" charset="utf-8"></script>
+      <script src="js/jquery.fancybox.pack.js" type="text/javascript" charset="utf-8"></script>
    </head>
    <body>
       <div class="container text-center">
@@ -73,7 +76,7 @@
                                                       </header>
                                                       <div class="comment-post">
                                                          <p class="text-info">
-                                                         	<strong>Bubble是一个简易的在线聊天站点，支持群聊、私聊以及机器人互动，每次登录可查看最新的30条群聊记录，本站点不会存储你的任何私聊内容和用户信息（且永远不会）.</strong>
+                                                         	<strong>Bubble是一个简易的在线聊天站点，支持群聊、私聊以及机器人互动，每次登录可查看最新的30条群聊记录(出于对服务器安全考虑,群聊图片不会保存)，本站点不会存储你的任何私聊内容和用户信息（且永远不会）.</strong>
                                                          </p>
                                                       </div>
                                                    </div>
@@ -94,7 +97,7 @@
                                                       </header>
                                                       <div class="comment-post">
                                                          <p class="text-muted">
-                                                         	<strong>Bubble is a simple online chat site , support group chat , private chat and interact with robot. It will show the latest 30 group chat records when you log in  , this site does not store any of your private chat content and user information (and never will).</strong>
+                                                         	<strong>Bubble is a simple online chat site , support group chat , private chat and interact with robot. It will show the latest 30 group chat records when you log in (For security reasons , images from group chat will not be stored.) , this site does not store any of your private chat content and user information (and never will).</strong>
                                                          </p>
                                                       </div>
                                                    </div>
@@ -113,6 +116,7 @@
                                                       <textarea placeholder="请输入点什么..." id="reply_grouproom"></textarea>
                                                       <ul>
 													  	<li><i class="fa fa-smile-o"></i></li>
+													  	<li><i class="fa fa-file-image-o"></i><input type="file" class="sendpic hidden" data-room="grouproom" data-category="public" /></li>
 													  </ul>
 													  <button class="btn btn-success green chat-submit col-md-1" data-room="grouproom" data-category="public"><i class="fa fa-reply"></i>Send</button>
 													  <text>(Ctrl + Enter)</text>
