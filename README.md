@@ -14,6 +14,8 @@
 * **Html5 Websocket**
 * **Bootstrap 3.3.5**
 * **[图灵机器人API](http://www.tuling123.com)**
+* **[FancyBox](https://github.com/fancyapps/fancyBox) - 强大的图片Popup浏览插件**
+* **[LRZ4](https://github.com/think2011/localResizeIMG) - 图片压缩**
 
 ### 功能&&实现 
 * **群聊**
@@ -23,6 +25,7 @@
 * **实时用户状态提醒**
 * **实时消息红点提示**
 * **微博最新GIF表情支持** 
+* **图片发送**
 
 ### 截图 
 ![截图1](https://github.com/FelixHo/bubble/blob/master/raw/1.png "截图") 
@@ -31,7 +34,9 @@
 
 ![截图3](https://github.com/FelixHo/bubble/blob/master/raw/3.png "截图")
 
-# [Have Fun !](http://bubble.hejunhao.me) 
+![截图4](https://github.com/FelixHo/bubble/blob/master/raw/4.png "截图")
+
+# [Have Fun !](http://bubble.hejunhao.me) - Demo
 
 
 Licence
