@@ -143,16 +143,16 @@ class Robot
     {
         $imgcl   = $icon ? '' : 'hidden';
         $content = "
-    	<li data-link='{$link}' class='media'>
-			<padebar>
-				<span>{$cat}</span>
-			</padebar>
-			<img src='{$icon}' class='{$imgcl}'/>
-			<div class='info'>
-				<h2 class='title'>{$title}</h2>
-				<p class='desc'>{$desc}</p>
-			</div>
-		</li>";
+        <li data-link='{$link}' class='media'>
+            <padebar>
+                <span>{$cat}</span>
+            </padebar>
+            <img src='{$icon}' class='{$imgcl}'/>
+            <div class='info'>
+                <h2 class='title'>{$title}</h2>
+                <p class='desc'>{$desc}</p>
+            </div>
+        </li>";
         return $content;
     }
     

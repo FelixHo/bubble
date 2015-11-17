@@ -2,12 +2,13 @@ $(function() {
     var ws = '';
     var init = false;
     var ip = '';
+    var ip_api = 'http://chaxun.1616.net/s.php?type=ip&output=json&callback=?&_='+Math.random();
     detectIE();
     checkws();
-	
-    $.getJSON("http://jsonip.com/?callback=?", function (data) {
+    
+    $.getJSON(ip_api, function (data) {
         console.log(data);
-        ip = data.ip;
+        ip = data.Ip;
         start('正在建立连接...');
     });
 
@@ -30,7 +31,7 @@ $(function() {
 
         }
         ws.onclose = function(e) {
-        		var time = new Date().toLocaleString()
+                var time = new Date().toLocaleString()
             console.log('Close:' + time);
             console.log('Connection has lost , websocket will try to reconnect after 5 seconds');
             message_alert('连接已经断开，正在重新连接...', '', 'danger', 'bubble_alert_on_ws_error');
@@ -48,7 +49,7 @@ $(function() {
             data = msg.data;
             switch (act) {
                 case 'open':
-                		var time = new Date().toLocaleString();
+                        var time = new Date().toLocaleString();
                     console.log('Successfully connect to the server! ' + time);
                     break;
 
@@ -57,9 +58,9 @@ $(function() {
                         init = true;
                         console.debug(data);
                         $.each(data, function() {
-                        		if (this.media == 1) {
-                        			this.content = '<a class="fancybox" href="'+ this.content+'"><img src="'+ this.content+'" class="imgcomment"></a>';
-                        		}
+                                if (this.media == 1) {
+                                    this.content = '<a class="fancybox" href="'+ this.content+'"><img src="'+ this.content+'" class="imgcomment"></a>';
+                                }
                             insert_comment_item('grouproom', this.username, this.avatar, this.time, this.content, 0.1);
                         });
                     }
@@ -84,7 +85,7 @@ $(function() {
                             }
                         });
                     } else if (code == 403) {
-                    		swal({
+                            swal({
                             title: 'Opps!',
                             text: msg.info,
                             showConfirmButton: false,
@@ -109,10 +110,10 @@ $(function() {
                     if (msg.code == 200) {
                         add_tab(data.room, data.room_icon)
                         if (data.media == 1) {
-                        		data.content = '<a class="fancybox" href="'+ data.content+'"><img src="'+ data.content+'" class="imgcomment"></a>';
-                        		if( data.username == $('#bubble_username').val() ){
-                        			waitingDialog.hide();
-                        		}
+                                data.content = '<a class="fancybox" href="'+ data.content+'"><img src="'+ data.content+'" class="imgcomment"></a>';
+                                if( data.username == $('#bubble_username').val() ){
+                                    waitingDialog.hide();
+                                }
                         }
                         insert_comment_item(data.room, data.username, data.avatar, data.time, data.content, 1000);
                         if (!document.hasFocus()) {
@@ -307,90 +308,90 @@ $(function() {
      * 发送图片
      */
     $('body').on('click', '.fa-file-image-o', function(e) {
-   		$(this).parent().children('input').trigger('click');
-   	});
+        $(this).parent().children('input').trigger('click');
+    });
 
-	$('body').on('change', '.sendpic', readImage);
-	
-	/**
-	 * 大图预览 
-	 */
-	$(".fancybox").fancybox({
-		openEffect	: 'elastic',
-		closeEffect	: 'elastic'
-	});
-	
-	/**
-	 * 获取图片base64
-	 */
-	function readImage() {//大图预览;进度条;
-	    if ( this.files && this.files[0] ) {
-	    		var currform = $(this).parents('form');
-	    		var currfile = this.files[0];
-	    		var mime = ['image/png', 'image/jpeg', 'image/bmp', 'image/gif']
-	        var FR = new FileReader();
-	        var category = $(this).data('category');
-	        var to = $(this).data('room');
-	        var from = $("#bubble_username").val();
-	        var IMAGE_LIMIT_SIZE = 1.0*1024*1024;
-	        var imgData = '';
-	        FR.onload = function(e) {
-	        		if ($.inArray( currfile.type, mime )==-1){
-	        			swal('非法文件', '只支持发送png、jpg、bmp和gif类型的图片', 'warning');
-	        			console.debug(currfile.type);
-	        		} else if (currfile.size > IMAGE_LIMIT_SIZE) { //大于1MB需要压缩
-	        			waitingDialog.show('正在发送...', {
-            				dialogSize: 'sm',
-            				progressType: 'success',
-            				onHide:function(){}
-					});
-	        			lrz(currfile, {quality:0.4})
-				    .then(function (rst) {
-				    		console.debug('压缩前大小：'+currfile.size/1024+'KB');
-				    		console.debug('压缩后大小：'+rst.fileLen/1024+'KB'+'   Base64Len：'+rst.base64Len/1024+'KB');
-				        if (rst.base64Len > IMAGE_LIMIT_SIZE) {
-				        		swal('警告!', '您的图片太大啦!', 'warning');
-				        		waitingDialog.hide();
-				        } else {
-				        		imgData = rst.base64;
-				        		ws.send($.toJSON({
-				                'action': 'chat',
-				                'content': imgData,
-				                'category': category,
-				                'from': from,
-				                'to': to,
-				                'media':1
-		            			}));
-				        }
-				    }).catch(function (err) {
-				        swal('出错啦!', '压缩图片过程中出错，建议换一张重试.', 'error');
-				        waitingDialog.hide();
-				    }).always(function(){
-				    		currform[0].reset();
-				    });
-	        			
-	        		} else {
-	        			imgData = e.target.result;
-	        			ws.send($.toJSON({
-		                'action': 'chat',
-		                'content': imgData,
-		                'category': category,
-		                'from': from,
-		                'to': to,
-		                'media':1
-            			}));
-            			waitingDialog.show('正在发送...', {
-            				dialogSize: 'sm',
-            				progressType: 'success',
-            				onHide:function(){}
-					});
-            			currform[0].reset();
-	        		}
-	        };       
-	        FR.readAsDataURL( this.files[0] );
-	    }
-	}
-   		
+    $('body').on('change', '.sendpic', readImage);
+    
+    /**
+     * 大图预览 
+     */
+    $(".fancybox").fancybox({
+        openEffect  : 'elastic',
+        closeEffect : 'elastic'
+    });
+    
+    /**
+     * 获取图片base64
+     */
+    function readImage() {//大图预览;进度条;
+        if ( this.files && this.files[0] ) {
+                var currform = $(this).parents('form');
+                var currfile = this.files[0];
+                var mime = ['image/png', 'image/jpeg', 'image/bmp', 'image/gif']
+            var FR = new FileReader();
+            var category = $(this).data('category');
+            var to = $(this).data('room');
+            var from = $("#bubble_username").val();
+            var IMAGE_LIMIT_SIZE = 1.0*1024*1024;
+            var imgData = '';
+            FR.onload = function(e) {
+                    if ($.inArray( currfile.type, mime )==-1){
+                        swal('非法文件', '只支持发送png、jpg、bmp和gif类型的图片', 'warning');
+                        console.debug(currfile.type);
+                    } else if (currfile.size > IMAGE_LIMIT_SIZE) { //大于1MB需要压缩
+                        waitingDialog.show('正在发送...', {
+                            dialogSize: 'sm',
+                            progressType: 'success',
+                            onHide:function(){}
+                    });
+                        lrz(currfile, {quality:0.4})
+                    .then(function (rst) {
+                            console.debug('压缩前大小：'+currfile.size/1024+'KB');
+                            console.debug('压缩后大小：'+rst.fileLen/1024+'KB'+'   Base64Len：'+rst.base64Len/1024+'KB');
+                        if (rst.base64Len > IMAGE_LIMIT_SIZE) {
+                                swal('警告!', '您的图片太大啦!', 'warning');
+                                waitingDialog.hide();
+                        } else {
+                                imgData = rst.base64;
+                                ws.send($.toJSON({
+                                'action': 'chat',
+                                'content': imgData,
+                                'category': category,
+                                'from': from,
+                                'to': to,
+                                'media':1
+                                }));
+                        }
+                    }).catch(function (err) {
+                        swal('出错啦!', '压缩图片过程中出错，建议换一张重试.', 'error');
+                        waitingDialog.hide();
+                    }).always(function(){
+                            currform[0].reset();
+                    });
+                        
+                    } else {
+                        imgData = e.target.result;
+                        ws.send($.toJSON({
+                        'action': 'chat',
+                        'content': imgData,
+                        'category': category,
+                        'from': from,
+                        'to': to,
+                        'media':1
+                        }));
+                        waitingDialog.show('正在发送...', {
+                            dialogSize: 'sm',
+                            progressType: 'success',
+                            onHide:function(){}
+                    });
+                        currform[0].reset();
+                    }
+            };       
+            FR.readAsDataURL( this.files[0] );
+        }
+    }
+        
     /**
      * 检测登录状态
      */
@@ -637,7 +638,7 @@ $(function() {
      * 检测IE版本 
      */
     function detectIE() {
-    	    var version = false;
+            var version = false;
         var ua = window.navigator.userAgent;
 
         var msie = ua.indexOf('MSIE ');
@@ -660,8 +661,8 @@ $(function() {
         }
  
         if (version !== false && version < 11) {
-        	    var warning_url = location.href + 'IE.html';
-	        window.location.replace(warning_url);
+                var warning_url = location.href + 'IE.html';
+            window.location.replace(warning_url);
         }
     }
     
@@ -669,6 +670,6 @@ $(function() {
      * 恢复标题
      */
     $(window).focus(function () {
-	    	$("title").text("Welcome To Bubble Chat Room !");
-	});
+            $("title").text("Welcome To Bubble Chat Room !");
+    });
 });
