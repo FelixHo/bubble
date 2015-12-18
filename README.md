@@ -10,7 +10,7 @@
 ### 技术支持 
 * **[Swoole](http://www.swoole.com/) - Websocket（一个纯C编写的高性能网络通信PHP扩展）**
 * **[Medoo](http://medoo.in)（轻量级PHP MySql封装库）**
-* **jQuery-Sina-Emotion（新浪微博表情jQuery插件，美化版**
+* **jQuery-Sina-Emotion（新浪微博表情jQuery插件，美化版）**
 * **Html5 Websocket**
 * **Bootstrap 3.3.5**
 * **[图灵机器人API](http://www.tuling123.com)**
