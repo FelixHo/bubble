@@ -6,11 +6,11 @@ $(function() {
     detectIE();
     checkws();
     
-    $.getJSON(ip_api, function (data) {
-        console.log(data);
-        ip = data.Ip;
+    $.get("https://api.ipdata.co", function (response) {
+        console.log(response);
+        ip = response.ip;
         start('正在建立连接...');
-    });
+    }, "jsonp");
 
     function start(msg) {
         waitingDialog.show(msg, {
